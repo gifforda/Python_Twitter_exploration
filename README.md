@@ -7,8 +7,7 @@ This repository will document my efforts to learn how to use Python how to acces
 ## How do I get set up? ##
 
 * Summary of set up
-* Configuration
-* Dependencies
+* Dependencies - need to add this
 * Database configuration
 * How to run tests
 * Deployment instructions

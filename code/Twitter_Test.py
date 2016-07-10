@@ -4,10 +4,10 @@ from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
 
 # Variables that contain the user credentials to access Twitter Streaming API
-ckey = '' # Customer key
-csecret = '' # Customer secret key
-atoken = '' # Access token 
-asecret = '' # Access secret token
+ckey = 'lW1gGhAuLVv87XaLEtp1X7r3N' # Customer key
+csecret = 'vevuQEqfLuXbWJbXp1OBZeUU6OrfPg6KFEc5F516eaTs7i1P8V' # Customer secret key
+atoken = '954657146-KKtvbrhDVRDeIJ0lPatYZ8DnHisXi63S7iFxJNB2' # Access token 
+asecret = 'HtPjBArnCUcuuwOJ7euZ8XezxoffkRcrcnxj1j8pzqcJd' # Access secret token
 
 class listener(StreamListener):
 
@@ -25,4 +25,4 @@ auth.set_access_token(atoken, asecret)
 twitterStream = Stream(auth, listener())
     
 # This line filters Twitter Stream to capture data by the keywords: 'python','learning'
-twitterStream.filter(track=['Zika','virus'])
+twitterStream.filter(track=['Zika'])

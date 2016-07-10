@@ -19,6 +19,46 @@ print("Of the %d unique users, there are %d different languages represented." %(
 print("Of the %d unique users, %d listed a self-reported location." %(len(uniqueID), len(uniqueLocation)))
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Plotting languages
+numLang = 10
+tweets_by_lang = tweets_full_dataframe['tweet_lang'].value_counts()
+tmpLanguages = tweets_by_lang[:numLang]
+width = [0.55]
+ind = list(range(1,numLang+1))
+names = tmpLanguages.keys()
+
+fig, ax = plt.subplots()
+rects1 = ax.bar(ind, tmpLanguages, width, color='red')
+plt.yscale('log')
+
+ax.set_title('Top 10 languages', fontsize=15, fontweight='bold')
+ax.set_ylabel('Number of tweets' , fontsize=15)
+ax.set_xlabel('Languages', fontsize=15)
+
+# Hide the right and top spines
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+
+# Only show ticks on the left and bottom spines
+ax.yaxis.set_ticks_position('left')
+ax.xaxis.set_ticks_position('bottom')
+
+ax.set_xticks(ind + width)
+ax.set_xticklabels(names)
+
+
+def autolabel(rects):
+    # attach some text labels
+    for rect in rects1:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/2., 1.05*height,
+                '%d' % int(height),
+                ha='center', va='bottom')
+
+autolabel(rects1)
+plt.show()
+
+# ---------------------------------------------------------------------------------------------------------------------
 # Plotting the top 5 languages
 
 tweets_by_lang = tweets_full_dataframe['tweet_lang'].value_counts()

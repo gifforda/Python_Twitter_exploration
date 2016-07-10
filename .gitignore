@@ -3,4 +3,4 @@ notebooks/.ipynb_checkpoints/
 .idea/
 data/*.txt
 data/*.json
-data/*
+data/*.*.zip

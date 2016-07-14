@@ -5,4 +5,4 @@ data/*.txt
 data/*.jsonp
 .DS_Store
 ./*/.DS_Store
-
+code/__pycache__/

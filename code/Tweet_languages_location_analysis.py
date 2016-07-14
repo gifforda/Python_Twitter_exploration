@@ -1,3 +1,9 @@
+'''
+Analyzes the data:
+- Plots histograms of languages.
+- Maps tweet location to the global map.
+'''
+
 import re
 import json
 import pandas as pd
@@ -8,11 +14,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from geopy.geocoders import Nominatim
 
+
+# Load in the Data Frame previously created
+tweets_full_dataframe = pd.read_pickle('../data/Tweets_Full_Data_Frame.pkl')
+
 # ---------------------------------------------------------------------------------------------------------------------
 #  Finding unique values
 
-uniqueID       = tweets_full_dataframe.userID.unique()
-uniqueLocation = tweets_full_dataframe.tweet_location.unique()
+uniqueID = tweets_full_dataframe.userID.unique()
+uniqueLocation = tweets_full_dataframe.user_defined_location.unique()
 uniqueLanguage = tweets_full_dataframe.tweet_lang.unique()
 
 print("There are %d tweets in this dataframe, but only %d unique users." %(len(tweets_full_dataframe), len(uniqueID)))
@@ -23,13 +33,13 @@ print("Of the %d unique users, %d listed a self-reported location." %(len(unique
 # Of the tweets with self-reported locations in the user profile, how many also have geo-location from the tweet?
 #  Determining how many tweets have both user-defined and GPS-defined (latitude, longitude) coordinates
 
-tweets_w_UserLocation = tweets_full_dataframe[['userID','tweet_location','user_lats','user_lons']].dropna()
+tweets_w_UserLocation = tweets_full_dataframe[['userID','user_defined_location','user_lats','user_lons']].dropna()
 print("There are %d tweets with user defined locations.\n" %(len(tweets_w_UserLocation)))
 
-tweets_w_GPSLocation = tweets_full_dataframe[['userID','geo_lats','geo_lons']].dropna()
+tweets_w_GPSLocation = tweets_full_dataframe[['userID','gps_lats','gps_lons']].dropna()
 print("There are %d tweets with GPS defined locations.\n" %(len(tweets_w_GPSLocation)))
 
-tweets_w_Location = tweets_full_dataframe[['userID','tweet_location','user_lats','user_lons','geo_lats','geo_lons']].dropna()
+tweets_w_Location = tweets_full_dataframe[['userID','user_defined_location','user_lats','user_lons','gps_lats','gps_lons']].dropna()
 print("From the %d tweets with user defined locations, %d also have GPS defined locations.\n"
       %(len(tweets_w_UserLocation), len(tweets_w_Location)))
 
@@ -45,8 +55,8 @@ print("From the %d tweets with both user defined and GPS defined locations, %d a
 # of the Earth is an oblate spheroid, and hence are more accurate than methods that assume a spherical Earth,
 # such as great-circle distance.
 
-geoLats = list(tweets_w_Location['geo_lats'])
-geoLons = list(tweets_w_Location['geo_lons'])
+gpsLats = list(tweets_w_Location['gps_lats'])
+gpsLons = list(tweets_w_Location['gps_lons'])
 usrLats = list(tweets_w_Location['user_lats'])
 usrLons = list(tweets_w_Location['user_lons'])
 
@@ -54,8 +64,8 @@ from geopy.distance import vincenty
 
 distance_btw_points = []
 
-for idx in range(0,len(latList)):
-    tmpDist = vincenty((latList[idx],lonList[idx]),(usrLats[idx],usrLons[idx])).miles
+for idx in range(0,len(gpsLats)):
+    tmpDist = vincenty((gpsLats[idx],gpsLons[idx]),(usrLats[idx],usrLons[idx])).miles
     distance_btw_points.append(tmpDist)
 
 print("The minimum distance between the user-defined location and the GPS-defined location is %.2f miles"
@@ -63,7 +73,7 @@ print("The minimum distance between the user-defined location and the GPS-define
 print("The maximum distance between the user-defined location and the GPS-defined location is %.2f miles"
       %(max(distance_btw_points)))
 
-# Users whos user-defined location and GPS-defined location are within 1 mile of eachother:
+# Users whose user-defined location and GPS-defined location are within 1 mile of eachother:
 distance_btw_points_1 = [i for i in distance_btw_points if i <= 1.0]
 print("\nOf the %d users with both user-defined and GPS-defined locations, %d are the same location."
      %(len(tweets_w_Location), len(distance_btw_points_1)))
@@ -110,6 +120,7 @@ plt.xlim([1000,11000])
 plt.title("Greater than 1000 miles", fontsize=25, fontweight='bold')
 
 plt.show()
+draw()
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Plotting languages
@@ -125,7 +136,7 @@ rects1 = ax.bar(ind, tmpLanguages, width, color='red')
 plt.yscale('log')
 
 ax.set_title('Top 10 languages', fontsize=15, fontweight='bold')
-ax.set_ylabel('Number of tweets' , fontsize=15)
+ax.set_ylabel('Number of tweets (log scale)' , fontsize=15)
 ax.set_xlabel('Languages', fontsize=15)
 
 # Hide the right and top spines
@@ -199,7 +210,7 @@ map.fillcontinents(color = '#888888')
 map.drawmapboundary(fill_color='#f4f4f4')
 
 # Define longitude and latitude points
-x,y = map(tweets_full_dataframe['geo_lons'].values, tweets_full_dataframe['geo_lats'].values)
+x,y = map(tweets_full_dataframe['gps_lons'].values, tweets_full_dataframe['gps_lats'].values)
 
 # Plot using round, red markers, size 6
 map.plot(x, y, 'ro', markersize=6)

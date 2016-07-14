@@ -14,7 +14,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from geopy.geocoders import Nominatim
 
-
 # Load in the Data Frame previously created
 tweets_full_dataframe = pd.read_pickle('../data/Tweets_Full_Data_Frame.pkl')
 
@@ -103,7 +102,6 @@ plt.hist(distance_btw_points_10, bins=20)
 plt.xlim([1,10])
 plt.title("1 to 10 miles", fontsize=25, fontweight='bold')
 
-
 plt.subplot(222)
 plt.hist(distance_btw_points_100)
 plt.xlim([10,100])
@@ -119,11 +117,12 @@ plt.hist(distance_btw_points_big)
 plt.xlim([1000,11000])
 plt.title("Greater than 1000 miles", fontsize=25, fontweight='bold')
 
-plt.show()
-draw()
+plt.savefig( '../figures/Histogram_of_distances.png' )
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Plotting languages
+# Top 10 most common languages, plotted on a log scale
+
 numLang = 10
 tweets_by_lang = tweets_full_dataframe['tweet_lang'].value_counts()
 tmpLanguages = tweets_by_lang[:numLang]
@@ -160,7 +159,8 @@ def autolabel(rects):
                 ha='center', va='bottom')
 
 autolabel(rects1)
-plt.show()
+plt.savefig( '../figures/Top_10_most_common_languages_logPlot.png' )
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Plotting the top 5 languages
@@ -175,17 +175,8 @@ ax.set_ylabel('Number of tweets' , fontsize=15)
 ax.set_title('Top 5 languages', fontsize=15, fontweight='bold')
 tweets_by_lang[:5].plot(ax=ax, kind='bar', color='red')
 
+plt.savefig( '../figures/Top_5_most_common_languages.png' )
 
-# ---------------------------------------------------------------------------------------------------------------------
-# Plotting the languages most common, after the 3 top
-
-fig, ax = plt.subplots()
-ax.tick_params(axis='x', labelsize=15)
-ax.tick_params(axis='y', labelsize=10)
-ax.set_xlabel('Languages', fontsize=15)
-ax.set_ylabel('Number of tweets' , fontsize=15)
-ax.set_title('4-10 most common languages', fontsize=15, fontweight='bold')
-tweets_by_lang[3:10].plot(ax=ax, kind='bar', color='red')
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Map out the tweet location by direct Lat Lon
@@ -217,8 +208,9 @@ map.plot(x, y, 'ro', markersize=6)
 
 plt.title('Tweet locations - LatLon encoded directly')
 
-# Show the map
-plt.show()
+# Save the map
+plt.savefig( '../figures/Global_map_of_GPS_locations.png' )
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -251,5 +243,6 @@ map.plot(x, y, 'ro', markersize=6)
 
 plt.title('Tweet locations - LatLon from user profile location')
 
-# Show the map
-plt.show()
+# Save the map
+plt.savefig( '../figures/Global_map_of_user_defined_locations.png' )
+
